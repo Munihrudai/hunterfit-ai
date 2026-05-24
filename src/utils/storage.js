@@ -244,3 +244,70 @@ export const resetAllData = () => {
 
   localStorage.clear()
 }
+// =========================
+// HUNTER PROGRESSION
+// =========================
+
+export const saveHunterProgress =
+  (data) => {
+
+    localStorage.setItem(
+      'hunterfit-hunter-progress',
+      JSON.stringify(data)
+    )
+  }
+
+export const loadHunterProgress =
+  () => {
+
+    return (
+      JSON.parse(
+        localStorage.getItem(
+          'hunterfit-hunter-progress'
+        )
+      ) || {
+
+        currentLevel: 1,
+
+        xp: 0,
+
+        rank: 'E-Rank',
+
+        title:
+          'Foundation Hunter',
+
+        completedLevels: [],
+      }
+    )
+  }
+  // =========================
+// QUEST STORAGE
+// =========================
+
+export const saveQuestProgress =
+  (data) => {
+
+    localStorage.setItem(
+      'hunterfit-quests',
+      JSON.stringify(data)
+    )
+  }
+
+export const loadQuestProgress =
+  () => {
+
+    return (
+      JSON.parse(
+        localStorage.getItem(
+          'hunterfit-quests'
+        )
+      ) || {
+
+        completedDaily: [],
+
+        completedWeekly: [],
+
+        completedBosses: [],
+      }
+    )
+  }
