@@ -1,303 +1,523 @@
 const foodDatabase = [
 
-  // PROTEIN
+  // =====================================
+  // RICE & GRAINS
+  // =====================================
 
   {
-    name: 'Egg',
-    category: 'Protein',
-    tags: ['gym', 'breakfast'],
-    serving: '1 egg',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 72,
-    protein: 6.3,
-    carbs: 0.4,
-    fats: 4.8,
-    fiber: 0,
-    sugar: 0.2,
-    water: 37,
-  },
-
-  {
-    name: 'Chicken Breast',
-    category: 'Protein',
-    tags: ['gym', 'lean'],
-    serving: '100g',
-    unit: 'g',
-    baseAmount: 100,
-    calories: 165,
-    protein: 31,
-    carbs: 0,
-    fats: 3.6,
-    fiber: 0,
-    sugar: 0,
-    water: 65,
-  },
-
-  {
-    name: 'Paneer',
-    category: 'Protein',
-    tags: ['indian', 'vegetarian'],
-    serving: '100g',
-    unit: 'g',
-    baseAmount: 100,
-    calories: 265,
-    protein: 18,
-    carbs: 1.2,
-    fats: 20,
-    fiber: 0,
-    sugar: 1.2,
-    water: 56,
-  },
-
-  {
-    name: 'Whey Protein',
-    category: 'Fitness',
-    tags: ['gym', 'supplement'],
-    serving: '1 scoop',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 120,
-    protein: 24,
-    carbs: 3,
-    fats: 1.5,
-    fiber: 0,
-    sugar: 1,
-    water: 5,
-  },
-
-  // CARBS
-
-  {
-    name: 'Rice',
-    category: 'Carbs',
-    tags: ['indian', 'lunch'],
-    serving: '100g cooked',
-    unit: 'g',
-    baseAmount: 100,
+    name: 'rice',
     calories: 130,
     protein: 2.7,
     carbs: 28,
     fats: 0.3,
     fiber: 0.4,
-    sugar: 0.1,
     water: 68,
+    quantity: '100g cooked',
   },
 
   {
-    name: 'Oats',
-    category: 'Carbs',
-    tags: ['breakfast', 'gym'],
-    serving: '100g',
-    unit: 'g',
-    baseAmount: 100,
+    name: 'brown rice',
+    calories: 111,
+    protein: 2.6,
+    carbs: 23,
+    fats: 0.9,
+    fiber: 1.8,
+    water: 70,
+    quantity: '100g cooked',
+  },
+
+  {
+    name: 'roti',
+    calories: 120,
+    protein: 3.5,
+    carbs: 18,
+    fats: 3,
+    fiber: 2.5,
+    water: 35,
+    quantity: '1 medium',
+  },
+
+  {
+    name: 'oats',
     calories: 389,
     protein: 16.9,
     carbs: 66,
     fats: 6.9,
     fiber: 10.6,
-    sugar: 1,
     water: 8,
+    quantity: '100g',
+  },
+
+  // =====================================
+  // PROTEIN SOURCES
+  // =====================================
+
+  {
+    name: 'egg',
+    calories: 78,
+    protein: 6.3,
+    carbs: 0.6,
+    fats: 5.3,
+    fiber: 0,
+    water: 76,
+    quantity: '1 large egg',
   },
 
   {
-    name: 'Bread',
-    category: 'Carbs',
-    tags: ['breakfast'],
-    serving: '2 slices',
-    unit: 'piece',
-    baseAmount: 2,
-    calories: 140,
-    protein: 6,
-    carbs: 26,
-    fats: 2,
+    name: 'chicken breast',
+    calories: 165,
+    protein: 31,
+    carbs: 0,
+    fats: 3.6,
+    fiber: 0,
+    water: 65,
+    quantity: '100g cooked',
+  },
+
+  {
+    name: 'fish',
+    calories: 206,
+    protein: 22,
+    carbs: 0,
+    fats: 12,
+    fiber: 0,
+    water: 64,
+    quantity: '100g cooked',
+  },
+
+  {
+    name: 'paneer',
+    calories: 265,
+    protein: 18,
+    carbs: 3.4,
+    fats: 20,
+    fiber: 0,
+    water: 55,
+    quantity: '100g',
+  },
+
+  {
+    name: 'tofu',
+    calories: 144,
+    protein: 17,
+    carbs: 3,
+    fats: 9,
     fiber: 2,
-    sugar: 3,
-    water: 35,
-  },
-
-  // FRUITS
-
-  {
-    name: 'Banana',
-    category: 'Fruits',
-    tags: ['fruit', 'energy'],
-    serving: '1 banana',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 105,
-    protein: 1.3,
-    carbs: 27,
-    fats: 0.3,
-    fiber: 3.1,
-    sugar: 14,
-    water: 89,
+    water: 70,
+    quantity: '100g',
   },
 
   {
-    name: 'Apple',
-    category: 'Fruits',
-    tags: ['fruit'],
-    serving: '1 apple',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 95,
-    protein: 0.5,
-    carbs: 25,
-    fats: 0.3,
-    fiber: 4.4,
-    sugar: 19,
-    water: 86,
+    name: 'dal',
+    calories: 116,
+    protein: 9,
+    carbs: 20,
+    fats: 0.4,
+    fiber: 8,
+    water: 70,
+    quantity: '100g cooked',
   },
 
-  {
-    name: 'Orange',
-    category: 'Fruits',
-    tags: ['fruit', 'vitamin c'],
-    serving: '1 orange',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 62,
-    protein: 1.2,
-    carbs: 15,
-    fats: 0.2,
-    fiber: 3.1,
-    sugar: 12,
-    water: 87,
-  },
-
-  // DAIRY
+  // =====================================
+  // MILK PRODUCTS
+  // =====================================
 
   {
-    name: 'Milk',
-    category: 'Dairy',
-    tags: ['breakfast'],
-    serving: '100ml',
-    unit: 'ml',
-    baseAmount: 100,
+    name: 'milk',
     calories: 61,
     protein: 3.2,
     carbs: 4.8,
     fats: 3.3,
     fiber: 0,
-    sugar: 5,
     water: 88,
+    quantity: '100ml',
   },
 
   {
-    name: 'Curd',
-    category: 'Dairy',
-    tags: ['indian'],
-    serving: '100g',
-    unit: 'g',
-    baseAmount: 100,
+    name: 'curd',
     calories: 98,
     protein: 11,
     carbs: 3.4,
     fats: 4.3,
     fiber: 0,
-    sugar: 3.2,
     water: 81,
-  },
-
-  // INDIAN FOODS
-
-  {
-    name: 'Idli',
-    category: 'Indian',
-    tags: ['breakfast'],
-    serving: '1 idli',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 58,
-    protein: 2,
-    carbs: 12,
-    fats: 0.4,
-    fiber: 0.9,
-    sugar: 0.1,
-    water: 24,
+    quantity: '100g',
   },
 
   {
-    name: 'Dosa',
-    category: 'Indian',
-    tags: ['breakfast'],
-    serving: '1 dosa',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 168,
-    protein: 4,
-    carbs: 28,
-    fats: 4,
-    fiber: 1.5,
-    sugar: 0.5,
-    water: 40,
+    name: 'buttermilk',
+    calories: 40,
+    protein: 3.3,
+    carbs: 4.8,
+    fats: 0.9,
+    fiber: 0,
+    water: 90,
+    quantity: '100ml',
   },
 
   {
-    name: 'Chapati',
-    category: 'Indian',
-    tags: ['lunch', 'dinner'],
-    serving: '1 chapati',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 120,
-    protein: 3.1,
-    carbs: 18,
-    fats: 3,
-    fiber: 2.4,
-    sugar: 0.4,
-    water: 12,
+    name: 'cheese',
+    calories: 402,
+    protein: 25,
+    carbs: 1.3,
+    fats: 33,
+    fiber: 0,
+    water: 37,
+    quantity: '100g',
+  },
+
+  // =====================================
+  // DRY FRUITS & NUTS
+  // =====================================
+
+  {
+    name: 'almonds',
+    calories: 579,
+    protein: 21,
+    carbs: 22,
+    fats: 50,
+    fiber: 12,
+    water: 4,
+    quantity: '100g',
   },
 
   {
-    name: 'Sambar',
-    category: 'Indian',
-    tags: ['south indian'],
-    serving: '1 cup',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 90,
-    protein: 4,
-    carbs: 12,
-    fats: 3,
-    fiber: 3,
-    sugar: 3,
-    water: 180,
-  },
-
-  // FAST FOOD
-
-  {
-    name: 'Burger',
-    category: 'Fast Food',
-    tags: ['junk'],
-    serving: '1 burger',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 295,
-    protein: 17,
+    name: 'cashews',
+    calories: 553,
+    protein: 18,
     carbs: 30,
-    fats: 14,
-    fiber: 2,
-    sugar: 5,
-    water: 40,
+    fats: 44,
+    fiber: 3.3,
+    water: 5,
+    quantity: '100g',
   },
 
   {
-    name: 'Pizza',
-    category: 'Fast Food',
-    tags: ['junk'],
-    serving: '1 slice',
-    unit: 'piece',
-    baseAmount: 1,
-    calories: 285,
-    protein: 12,
-    carbs: 36,
-    fats: 10,
+    name: 'walnuts',
+    calories: 654,
+    protein: 15,
+    carbs: 14,
+    fats: 65,
+    fiber: 7,
+    water: 4,
+    quantity: '100g',
+  },
+
+  {
+    name: 'pistachios',
+    calories: 560,
+    protein: 20,
+    carbs: 28,
+    fats: 45,
+    fiber: 10,
+    water: 4,
+    quantity: '100g',
+  },
+
+  {
+    name: 'peanuts',
+    calories: 567,
+    protein: 26,
+    carbs: 16,
+    fats: 49,
+    fiber: 8,
+    water: 7,
+    quantity: '100g',
+  },
+
+  {
+    name: 'raisins',
+    calories: 299,
+    protein: 3.1,
+    carbs: 79,
+    fats: 0.5,
+    fiber: 3.7,
+    water: 15,
+    quantity: '100g',
+  },
+
+  {
+    name: 'dates',
+    calories: 282,
+    protein: 2.5,
+    carbs: 75,
+    fats: 0.4,
+    fiber: 8,
+    water: 21,
+    quantity: '100g',
+  },
+
+  // =====================================
+  // SEEDS
+  // =====================================
+
+  {
+    name: 'chia seeds',
+    calories: 486,
+    protein: 17,
+    carbs: 42,
+    fats: 31,
+    fiber: 34,
+    water: 6,
+    quantity: '100g',
+  },
+
+  {
+    name: 'flax seeds',
+    calories: 534,
+    protein: 18,
+    carbs: 29,
+    fats: 42,
+    fiber: 27,
+    water: 7,
+    quantity: '100g',
+  },
+
+  {
+    name: 'pumpkin seeds',
+    calories: 559,
+    protein: 30,
+    carbs: 11,
+    fats: 49,
+    fiber: 6,
+    water: 5,
+    quantity: '100g',
+  },
+
+  {
+    name: 'sunflower seeds',
+    calories: 584,
+    protein: 21,
+    carbs: 20,
+    fats: 51,
+    fiber: 9,
+    water: 5,
+    quantity: '100g',
+  },
+
+  // =====================================
+  // CURRY INGREDIENTS
+  // =====================================
+
+  {
+    name: 'onion',
+    calories: 40,
+    protein: 1.1,
+    carbs: 9.3,
+    fats: 0.1,
+    fiber: 1.7,
+    water: 89,
+    quantity: '100g',
+  },
+
+  {
+    name: 'tomato',
+    calories: 18,
+    protein: 0.9,
+    carbs: 3.9,
+    fats: 0.2,
+    fiber: 1.2,
+    water: 95,
+    quantity: '100g',
+  },
+
+  {
+    name: 'potato',
+    calories: 77,
+    protein: 2,
+    carbs: 17,
+    fats: 0.1,
+    fiber: 2.2,
+    water: 79,
+    quantity: '100g',
+  },
+
+  {
+    name: 'carrot',
+    calories: 41,
+    protein: 0.9,
+    carbs: 10,
+    fats: 0.2,
+    fiber: 2.8,
+    water: 88,
+    quantity: '100g',
+  },
+
+  {
+    name: 'green chilli',
+    calories: 40,
+    protein: 2,
+    carbs: 9,
+    fats: 0.2,
+    fiber: 1.5,
+    water: 88,
+    quantity: '100g',
+  },
+
+  {
+    name: 'ginger',
+    calories: 80,
+    protein: 1.8,
+    carbs: 18,
+    fats: 0.8,
+    fiber: 2,
+    water: 79,
+    quantity: '100g',
+  },
+
+  {
+    name: 'garlic',
+    calories: 149,
+    protein: 6.4,
+    carbs: 33,
+    fats: 0.5,
+    fiber: 2.1,
+    water: 59,
+    quantity: '100g',
+  },
+
+  {
+    name: 'coriander leaves',
+    calories: 23,
+    protein: 2.1,
+    carbs: 3.7,
+    fats: 0.5,
+    fiber: 2.8,
+    water: 92,
+    quantity: '100g',
+  },
+
+  {
+    name: 'curry leaves',
+    calories: 108,
+    protein: 6.1,
+    carbs: 18,
+    fats: 1,
+    fiber: 6,
+    water: 63,
+    quantity: '100g',
+  },
+
+  // =====================================
+  // VEGETABLES
+  // =====================================
+
+  {
+    name: 'broccoli',
+    calories: 34,
+    protein: 2.8,
+    carbs: 7,
+    fats: 0.4,
+    fiber: 2.6,
+    water: 89,
+    quantity: '100g',
+  },
+
+  {
+    name: 'spinach',
+    calories: 23,
+    protein: 2.9,
+    carbs: 3.6,
+    fats: 0.4,
+    fiber: 2.2,
+    water: 91,
+    quantity: '100g',
+  },
+
+  {
+    name: 'cabbage',
+    calories: 25,
+    protein: 1.3,
+    carbs: 6,
+    fats: 0.1,
     fiber: 2.5,
-    sugar: 4,
-    water: 45,
+    water: 92,
+    quantity: '100g',
+  },
+
+  // =====================================
+  // FRUITS
+  // =====================================
+
+  {
+    name: 'banana',
+    calories: 89,
+    protein: 1.1,
+    carbs: 23,
+    fats: 0.3,
+    fiber: 2.6,
+    water: 75,
+    quantity: '100g',
+  },
+
+  {
+    name: 'apple',
+    calories: 52,
+    protein: 0.3,
+    carbs: 14,
+    fats: 0.2,
+    fiber: 2.4,
+    water: 86,
+    quantity: '100g',
+  },
+
+  {
+    name: 'orange',
+    calories: 47,
+    protein: 0.9,
+    carbs: 12,
+    fats: 0.1,
+    fiber: 2.4,
+    water: 87,
+    quantity: '100g',
+  },
+
+  {
+    name: 'mango',
+    calories: 60,
+    protein: 0.8,
+    carbs: 15,
+    fats: 0.4,
+    fiber: 1.6,
+    water: 83,
+    quantity: '100g',
+  },
+
+  // =====================================
+  // DRINKS
+  // =====================================
+
+  {
+    name: 'horlicks',
+    calories: 380,
+    protein: 8,
+    carbs: 80,
+    fats: 3,
+    fiber: 1,
+    water: 3,
+    quantity: '100g powder',
+  },
+
+  {
+    name: 'coffee',
+    calories: 2,
+    protein: 0.3,
+    carbs: 0,
+    fats: 0,
+    fiber: 0,
+    water: 99,
+    quantity: '1 cup',
+  },
+
+  {
+    name: 'tea',
+    calories: 2,
+    protein: 0,
+    carbs: 0,
+    fats: 0,
+    fiber: 0,
+    water: 99,
+    quantity: '1 cup',
   },
 
 ]
