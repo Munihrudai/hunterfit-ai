@@ -27,26 +27,107 @@ export const loadProfile = () => {
 // MEALS STORAGE
 // =========================
 
-export const saveMeals = (
-  meals
-) => {
+export const saveMeals =
+  (meals) => {
 
-  localStorage.setItem(
-    'hunterfit-meals',
-    JSON.stringify(meals)
-  )
-}
+    const mealsWithTime =
+      meals.map((meal) => ({
 
-export const loadMeals = () => {
+        ...meal,
 
-  return (
-    JSON.parse(
-      localStorage.getItem(
-        'hunterfit-meals'
+        createdAt:
+          meal.createdAt ||
+          Date.now(),
+      }))
+
+    localStorage.setItem(
+
+      'hunterfit-meals',
+
+      JSON.stringify(
+        mealsWithTime
       )
-    ) || []
-  )
-}
+    )
+  }
+
+export const loadMeals =
+  () => {
+
+    const meals =
+      JSON.parse(
+        localStorage.getItem(
+          'hunterfit-meals'
+        )
+      ) || []
+
+    const now =
+      Date.now()
+
+    // REMOVE OLD MEALS
+
+    const validMeals =
+      meals.filter(
+        (meal) => {
+
+          const age =
+            now -
+            (
+              meal.createdAt ||
+              0
+            )
+
+          return (
+            age <
+            24 *
+              60 *
+              60 *
+              1000
+          )
+        }
+      )
+
+    // AUTO CLEANUP
+
+    localStorage.setItem(
+
+      'hunterfit-meals',
+
+      JSON.stringify(
+        validMeals
+      )
+    )
+
+    return validMeals
+  }
+
+// =========================
+// CUSTOM FOODS
+// =========================
+
+export const saveCustomFoods =
+  (foods) => {
+
+    localStorage.setItem(
+
+      'hunterfit-custom-foods',
+
+      JSON.stringify(
+        foods
+      )
+    )
+  }
+
+export const loadCustomFoods =
+  () => {
+
+    return (
+      JSON.parse(
+        localStorage.getItem(
+          'hunterfit-custom-foods'
+        )
+      ) || []
+    )
+  }
 
 // =========================
 // WATER STORAGE
@@ -72,6 +153,7 @@ export const loadWaterData = () => {
     )
 
   return {
+
     current:
       data?.current || 0,
 
@@ -84,29 +166,36 @@ export const loadWaterData = () => {
 // WORKOUT STORAGE
 // =========================
 
-export const saveWorkoutHistory = (
-  workouts
-) => {
+export const saveWorkoutHistory =
+  (
+    workouts
+  ) => {
 
-  localStorage.setItem(
-    'hunterfit-workouts',
-    JSON.stringify(workouts)
-  )
-}
+    localStorage.setItem(
 
-export const loadWorkoutHistory = () => {
+      'hunterfit-workouts',
 
-  return (
-    JSON.parse(
-      localStorage.getItem(
-        'hunterfit-workouts'
+      JSON.stringify(
+        workouts
       )
-    ) || []
-  )
-}
+    )
+  }
+
+export const loadWorkoutHistory =
+  () => {
+
+    return (
+      JSON.parse(
+        localStorage.getItem(
+          'hunterfit-workouts'
+        )
+      )
+      || []
+    )
+  }
 
 // =========================
-// SUPPORT OLD IMPORT NAMES
+// SUPPORT OLD IMPORTS
 // =========================
 
 export const saveWorkouts =
@@ -119,131 +208,156 @@ export const loadWorkouts =
 // HUNTER XP STORAGE
 // =========================
 
-export const saveHunterXP = (
-  xp
-) => {
+export const saveHunterXP =
+  (xp) => {
 
-  localStorage.setItem(
-    'hunterfit-xp',
-    JSON.stringify(xp)
-  )
-}
+    localStorage.setItem(
+      'hunterfit-xp',
+      JSON.stringify(xp)
+    )
+  }
 
-export const loadHunterXP = () => {
+export const loadHunterXP =
+  () => {
 
-  return (
-    JSON.parse(
-      localStorage.getItem(
-        'hunterfit-xp'
-      )
-    ) || {
-      xp: 0,
-      level: 1,
-      rank: 'E-Rank',
-    }
-  )
-}
+    return (
+      JSON.parse(
+        localStorage.getItem(
+          'hunterfit-xp'
+        )
+      ) || {
+
+        xp: 0,
+
+        level: 1,
+
+        rank: 'E-Rank',
+      }
+    )
+  }
 
 // =========================
 // DAILY STREAK STORAGE
 // =========================
 
-export const saveStreakData = (
-  streak
-) => {
+export const saveStreakData =
+  (
+    streak
+  ) => {
 
-  localStorage.setItem(
-    'hunterfit-streak',
-    JSON.stringify(streak)
-  )
-}
+    localStorage.setItem(
 
-export const loadStreakData = () => {
+      'hunterfit-streak',
 
-  return (
-    JSON.parse(
-      localStorage.getItem(
-        'hunterfit-streak'
+      JSON.stringify(
+        streak
       )
-    ) || {
-      current: 0,
-      best: 0,
-    }
-  )
-}
+    )
+  }
+
+export const loadStreakData =
+  () => {
+
+    return (
+      JSON.parse(
+        localStorage.getItem(
+          'hunterfit-streak'
+        )
+      ) || {
+
+        current: 0,
+
+        best: 0,
+      }
+    )
+  }
 
 // =========================
 // SETTINGS STORAGE
 // =========================
 
-export const saveSettings = (
-  settings
-) => {
+export const saveSettings =
+  (
+    settings
+  ) => {
 
-  localStorage.setItem(
-    'hunterfit-settings',
-    JSON.stringify(settings)
-  )
-}
+    localStorage.setItem(
 
-export const loadSettings = () => {
+      'hunterfit-settings',
 
-  return (
-    JSON.parse(
-      localStorage.getItem(
-        'hunterfit-settings'
+      JSON.stringify(
+        settings
       )
-    ) || {
-      darkMode: true,
-      notifications: true,
-    }
-  )
-}
+    )
+  }
 
-export const resetAllData = () => {
+export const loadSettings =
+  () => {
 
-  localStorage.removeItem(
-    'hunterfit-profile'
-  )
+    return (
+      JSON.parse(
+        localStorage.getItem(
+          'hunterfit-settings'
+        )
+      ) || {
 
-  localStorage.removeItem(
-    'hunterfit-meals'
-  )
+        darkMode: true,
 
-  localStorage.removeItem(
-    'hunterfit-water'
-  )
+        notifications: true,
+      }
+    )
+  }
 
-  localStorage.removeItem(
-    'hunterfit-workouts'
-  )
+// =========================
+// RESET SYSTEM
+// =========================
 
-  localStorage.removeItem(
-    'hunterfit-xp'
-  )
+export const resetAllData =
+  () => {
 
-  localStorage.removeItem(
-    'hunterfit-streak'
-  )
+    localStorage.removeItem(
+      'hunterfit-profile'
+    )
 
-  localStorage.removeItem(
-    'hunterfit-settings'
-  )
+    localStorage.removeItem(
+      'hunterfit-meals'
+    )
 
-  localStorage.removeItem(
-    'hunterfit-recent-foods'
-  )
+    localStorage.removeItem(
+      'hunterfit-water'
+    )
 
-  localStorage.removeItem(
-    'hunterfit-theme'
-  )
+    localStorage.removeItem(
+      'hunterfit-workouts'
+    )
 
-  localStorage.removeItem(
-    'hunterfit-rank'
-  )
+    localStorage.removeItem(
+      'hunterfit-xp'
+    )
 
-  localStorage.clear()
-}
+    localStorage.removeItem(
+      'hunterfit-streak'
+    )
+
+    localStorage.removeItem(
+      'hunterfit-settings'
+    )
+
+    localStorage.removeItem(
+      'hunterfit-recent-foods'
+    )
+
+    localStorage.removeItem(
+      'hunterfit-theme'
+    )
+
+    localStorage.removeItem(
+      'hunterfit-custom-foods'
+    )
+
+    localStorage.clear()
+  }
+
 // =========================
 // HUNTER PROGRESSION
 // =========================
@@ -252,7 +366,9 @@ export const saveHunterProgress =
   (data) => {
 
     localStorage.setItem(
+
       'hunterfit-hunter-progress',
+
       JSON.stringify(data)
     )
   }
@@ -280,7 +396,8 @@ export const loadHunterProgress =
       }
     )
   }
-  // =========================
+
+// =========================
 // QUEST STORAGE
 // =========================
 
@@ -288,7 +405,9 @@ export const saveQuestProgress =
   (data) => {
 
     localStorage.setItem(
+
       'hunterfit-quests',
+
       JSON.stringify(data)
     )
   }

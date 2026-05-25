@@ -11,6 +11,7 @@ import {
   Dumbbell,
   Target,
   Scale,
+  Utensils,
 } from 'lucide-react'
 
 import {
@@ -33,6 +34,7 @@ import WaterTracker from '../components/WaterTracker'
 import WorkoutTracker from '../components/WorkoutTracker'
 import HunterRank from '../components/HunterRank'
 import RPGSystem from '../components/RPGSystem'
+import FoodCalculator from '../components/FoodCalculator'
 
 export default function Dashboard() {
 
@@ -64,6 +66,9 @@ export default function Dashboard() {
   }, [])
 
   const meals = loadMeals()
+
+  const recentMeals =
+    meals.slice(0, 5)
 
   const profile = loadProfile()
 
@@ -110,6 +115,46 @@ export default function Dashboard() {
         acc +
         Number(
           meal.protein || 0
+        ),
+      0
+    )
+
+  const totalCarbs =
+    meals.reduce(
+      (acc, meal) =>
+        acc +
+        Number(
+          meal.carbs || 0
+        ),
+      0
+    )
+
+  const totalFats =
+    meals.reduce(
+      (acc, meal) =>
+        acc +
+        Number(
+          meal.fats || 0
+        ),
+      0
+    )
+
+  const totalFiber =
+    meals.reduce(
+      (acc, meal) =>
+        acc +
+        Number(
+          meal.fiber || 0
+        ),
+      0
+    )
+
+  const totalWaterFood =
+    meals.reduce(
+      (acc, meal) =>
+        acc +
+        Number(
+          meal.water || 0
         ),
       0
     )
@@ -199,10 +244,13 @@ export default function Dashboard() {
   ]
 
   return (
+
     <div
       key={refreshKey}
       className="min-h-screen bg-[#050505] text-white p-6"
     >
+
+      {/* HEADER */}
 
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-10">
 
@@ -219,18 +267,24 @@ export default function Dashboard() {
             }}
             className="text-5xl font-bold text-purple-400 mb-3"
           >
+
             HunterFit AI
+
           </motion.h1>
 
           <p className="text-gray-400 text-lg">
+
             Welcome back
             {' '}
             {profile.name || 'Hunter'}
+
           </p>
 
         </div>
 
       </div>
+
+      {/* TOP CARDS */}
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
 
@@ -268,7 +322,11 @@ export default function Dashboard() {
 
       </div>
 
+      {/* SECOND SECTION */}
+
       <div className="grid grid-cols-1 xl:grid-cols-3 gap-8 mb-8">
+
+        {/* BMI */}
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
 
@@ -277,15 +335,21 @@ export default function Dashboard() {
             <div>
 
               <p className="text-gray-400 mb-3">
+
                 BMI Status
+
               </p>
 
               <h2 className="text-5xl font-bold text-purple-400">
+
                 {bmi}
+
               </h2>
 
               <p className="text-green-400 mt-3">
+
                 {bmiStatus}
+
               </p>
 
             </div>
@@ -299,6 +363,8 @@ export default function Dashboard() {
           </div>
 
         </div>
+
+        {/* HYDRATION */}
 
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6 flex items-center justify-center">
 
@@ -331,10 +397,12 @@ export default function Dashboard() {
                   dominantBaseline="middle"
                   className="fill-white text-3xl font-bold"
                 >
+
                   {Math.round(
                     hydrationPercent
                   )}
                   %
+
                 </text>
 
               </RadialBarChart>
@@ -345,6 +413,8 @@ export default function Dashboard() {
 
         </div>
 
+        {/* STREAK */}
+
         <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
 
           <div className="flex items-center justify-between">
@@ -352,15 +422,19 @@ export default function Dashboard() {
             <div>
 
               <p className="text-gray-400 mb-4">
+
                 Daily Streak
+
               </p>
 
               <h2 className="text-5xl font-bold text-orange-400 mb-3">
+
                 {
                   streakData.current
                 }
                 {' '}
                 Days
+
               </h2>
 
             </div>
@@ -377,11 +451,230 @@ export default function Dashboard() {
 
       </div>
 
+      {/* NUTRITION ANALYTICS */}
+
+      <div className="bg-white/5 border border-white/10 rounded-3xl p-8 mb-8">
+
+        <div className="flex items-center gap-4 mb-8">
+
+          <div className="w-14 h-14 rounded-2xl bg-green-500/20 flex items-center justify-center text-green-400">
+
+            <Utensils size={28} />
+
+          </div>
+
+          <div>
+
+            <h2 className="text-3xl font-bold text-green-400">
+
+              Nutrition Analytics
+
+            </h2>
+
+            <p className="text-gray-400">
+
+              Today's nutrition summary
+
+            </p>
+
+          </div>
+
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-5">
+
+          <NutritionCard
+            label="Calories"
+            value={`${Math.round(
+              totalCalories
+            )}`}
+          />
+
+          <NutritionCard
+            label="Protein"
+            value={`${Math.round(
+              totalProtein
+            )} g`}
+          />
+
+          <NutritionCard
+            label="Carbs"
+            value={`${Math.round(
+              totalCarbs
+            )} g`}
+          />
+
+          <NutritionCard
+            label="Fats"
+            value={`${Math.round(
+              totalFats
+            )} g`}
+          />
+
+          <NutritionCard
+            label="Fiber"
+            value={`${Math.round(
+              totalFiber
+            )} g`}
+          />
+
+          <NutritionCard
+            label="Food Water"
+            value={`${Math.round(
+              totalWaterFood
+            )} ml`}
+          />
+
+        </div>
+
+      </div>
+
+      {/* RECENT MEALS */}
+
+      <div className="bg-white/5 border border-white/10 rounded-3xl p-8 mb-8">
+
+        <h2 className="text-3xl font-bold text-purple-400 mb-8">
+
+          Recent Meals
+
+        </h2>
+
+        {recentMeals.length === 0 ? (
+
+          <p className="text-gray-400">
+
+            No meals added today
+
+          </p>
+
+        ) : (
+
+          <div className="space-y-4">
+
+            {recentMeals.map(
+              (
+                meal,
+                index
+              ) => (
+
+                <div
+                  key={index}
+                  className="bg-black/20 border border-white/10 rounded-2xl p-5 flex flex-col md:flex-row md:items-center justify-between gap-4"
+                >
+
+                  <div>
+
+                    <h3 className="text-xl font-bold text-white">
+
+                      {meal.name}
+
+                    </h3>
+
+                    <p className="text-gray-400">
+
+                      {
+                        meal.quantity
+                      }
+
+                    </p>
+
+                  </div>
+
+                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+
+                    <div>
+
+                      <p className="text-gray-400">
+
+                        Calories
+
+                      </p>
+
+                      <p className="text-orange-400 font-bold">
+
+                        {
+                          meal.calories
+                        }
+
+                      </p>
+
+                    </div>
+
+                    <div>
+
+                      <p className="text-gray-400">
+
+                        Protein
+
+                      </p>
+
+                      <p className="text-green-400 font-bold">
+
+                        {
+                          meal.protein
+                        } g
+
+                      </p>
+
+                    </div>
+
+                    <div>
+
+                      <p className="text-gray-400">
+
+                        Carbs
+
+                      </p>
+
+                      <p className="text-blue-400 font-bold">
+
+                        {
+                          meal.carbs
+                        } g
+
+                      </p>
+
+                    </div>
+
+                    <div>
+
+                      <p className="text-gray-400">
+
+                        Fats
+
+                      </p>
+
+                      <p className="text-pink-400 font-bold">
+
+                        {
+                          meal.fats
+                        } g
+
+                      </p>
+
+                    </div>
+
+                  </div>
+
+                </div>
+              )
+            )}
+
+          </div>
+
+        )}
+
+      </div>
+
+      {/* COMPONENTS */}
+
       <ProfileCard />
 
       <WaterTracker />
 
       <WorkoutTracker />
+
+      <FoodCalculator />
 
       <HunterRank
         xp={hunterXP.xp}
@@ -403,6 +696,7 @@ function DashboardCard({
 }) {
 
   return (
+
     <motion.div
       whileHover={{
         scale: 1.03,
@@ -411,15 +705,21 @@ function DashboardCard({
     >
 
       <div className="text-purple-400 mb-6">
+
         {icon}
+
       </div>
 
       <h2 className="text-2xl font-bold mb-3">
+
         {title}
+
       </h2>
 
       <p className="text-gray-300 text-xl">
+
         {value}
+
       </p>
 
       <div className="w-full h-3 bg-white/10 rounded-full mt-8 overflow-hidden">
@@ -434,5 +734,30 @@ function DashboardCard({
       </div>
 
     </motion.div>
+  )
+}
+
+function NutritionCard({
+  label,
+  value,
+}) {
+
+  return (
+
+    <div className="bg-black/20 border border-white/10 rounded-2xl p-5">
+
+      <p className="text-gray-400 mb-2">
+
+        {label}
+
+      </p>
+
+      <h4 className="text-2xl font-bold text-white">
+
+        {value}
+
+      </h4>
+
+    </div>
   )
 }

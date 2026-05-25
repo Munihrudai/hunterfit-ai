@@ -1,7 +1,5 @@
 import { useEffect, useState } from 'react'
 
-import foodDatabase from '../data/foodDatabase'
-
 import {
   saveMeals,
   loadMeals,
@@ -10,8 +8,6 @@ import {
 import {
   Search,
   Plus,
-  Clock3,
-  Flame,
 } from 'lucide-react'
 
 export default function FoodCalculator() {
@@ -23,9 +19,6 @@ export default function FoodCalculator() {
     useState([])
 
   const [suggestions, setSuggestions] =
-    useState([])
-
-  const [recentFoods, setRecentFoods] =
     useState([])
 
   const [customFoods, setCustomFoods] =
@@ -53,23 +46,7 @@ export default function FoodCalculator() {
       unit: 'g',
     })
 
-  const allFoods = [
-
-    ...foodDatabase,
-
-    ...customFoods,
-  ]
-
   useEffect(() => {
-
-    const savedRecent =
-      JSON.parse(
-        localStorage.getItem(
-          'hunterfit-recent-foods'
-        )
-      ) || []
-
-    setRecentFoods(savedRecent)
 
     const savedCustomFoods =
       JSON.parse(
@@ -84,157 +61,235 @@ export default function FoodCalculator() {
 
   }, [])
 
+  // =========================
+  // USDA SEARCH
+  // =========================
+
+  const searchUSDAFoods =
+    async (query) => {
+
+      try {
+
+        const response =
+          await fetch(
+
+            `https://api.nal.usda.gov/fdc/v1/foods/search?query=${query}&pageSize=10&api_key=${import.meta.env.VITE_USDA_API_KEY}`
+          )
+
+        const data =
+          await response.json()
+
+        if (
+          data?.foods
+        ) {
+
+          const formattedFoods =
+            data.foods.map(
+              (food) => {
+
+                const nutrients =
+                  food.foodNutrients || []
+
+                const getNutrient =
+                  (name) => {
+
+                    const found =
+                      nutrients.find(
+                        (n) =>
+
+                          n.nutrientName
+                            ?.toLowerCase()
+                            .includes(
+                              name.toLowerCase()
+                            )
+                      )
+
+                    return (
+                      found?.value || 0
+                    )
+                  }
+
+                return {
+
+                  name:
+                    food.description,
+
+                  calories:
+                    getNutrient(
+                      'Energy'
+                    ),
+
+                  protein:
+                    getNutrient(
+                      'Protein'
+                    ),
+
+                  carbs:
+                    getNutrient(
+                      'Carbohydrate'
+                    ),
+
+                  fats:
+                    getNutrient(
+                      'Total lipid'
+                    ),
+
+                  fiber:
+                    getNutrient(
+                      'Fiber'
+                    ),
+
+                  water:
+                    getNutrient(
+                      'Water'
+                    ),
+
+                  defaultQuantity:
+                    100,
+
+                  unit: 'g',
+                }
+              }
+            )
+
+          setSuggestions(
+            formattedFoods
+          )
+        }
+
+      } catch (error) {
+
+        console.log(error)
+      }
+    }
+
+  // =========================
+  // CALCULATIONS
+  // =========================
+
   const calculateNutrition =
     (
       food,
       enteredQuantity
     ) => {
 
+      const safeQuantity =
+        Number(
+          food.defaultQuantity
+        ) || 1
+
       const factor =
         enteredQuantity /
-        food.defaultQuantity
+        safeQuantity
 
       return {
 
         calories:
-          food.calories *
-          factor,
+          (
+            Number(
+              food.calories
+            ) * factor
+          ) || 0,
 
         protein:
-          food.protein *
-          factor,
+          (
+            Number(
+              food.protein
+            ) * factor
+          ) || 0,
 
         carbs:
-          food.carbs *
-          factor,
+          (
+            Number(
+              food.carbs
+            ) * factor
+          ) || 0,
 
         fats:
-          food.fats *
-          factor,
+          (
+            Number(
+              food.fats
+            ) * factor
+          ) || 0,
 
         fiber:
-          food.fiber *
-          factor,
+          (
+            Number(
+              food.fiber
+            ) * factor
+          ) || 0,
 
         water:
-          food.water *
-          factor,
+          (
+            Number(
+              food.water
+            ) * factor
+          ) || 0,
       }
     }
 
-  const parseInput = (
-    text
-  ) => {
+  // =========================
+  // INPUT
+  // =========================
 
-    const lowerText =
-      text.toLowerCase()
+  const handleInput =
+    async (value) => {
 
-    const parts =
-      lowerText.split(
-        /,|and/
-      )
+      setInput(value)
 
-    const detectedFoods = []
+      if (
+        !value.trim()
+      ) {
 
-    parts.forEach((part) => {
+        setSuggestions([])
 
-      const amountMatch =
-        part.match(/\d+/)
-
-      const amount =
-        amountMatch
-          ? Number(
-              amountMatch[0]
-            )
-          : 1
-
-      const matchedFood =
-        allFoods.find(
-          (food) => {
-
-            if (
-              !food?.name
-            )
-              return false
-
-            return part.includes(
-              food.name.toLowerCase()
-            )
-          }
-        )
-
-      if (matchedFood) {
-
-        const nutrition =
-          calculateNutrition(
-            matchedFood,
-            amount
-          )
-
-        detectedFoods.push({
-
-          ...matchedFood,
-
-          enteredQuantity:
-            amount,
-
-          calculated:
-            nutrition,
-        })
+        return
       }
-    })
 
-    setFoods(
-      detectedFoods
-    )
-  }
-
-  const handleInput = (
-    value
-  ) => {
-
-    setInput(value)
-
-    parseInput(value)
-
-    if (
-      !value.trim()
-    ) {
-
-      setSuggestions([])
-
-      return
+      await searchUSDAFoods(
+        value
+      )
     }
 
-    const matchedSuggestions =
-      allFoods.filter(
-        (food) =>
-          food.name
-            .toLowerCase()
-            .includes(
-              value.toLowerCase()
-            )
-      )
-
-    setSuggestions(
-      matchedSuggestions.slice(
-        0,
-        8
-      )
-    )
-  }
+  // =========================
+  // SELECT FOOD
+  // =========================
 
   const selectSuggestion =
     (
-      foodName
+      food
     ) => {
 
-      setInput(foodName)
+      const nutrition =
+        calculateNutrition(
+          food,
+          food.defaultQuantity
+        )
+
+      setFoods((prev) => [
+
+        ...prev,
+
+        {
+
+          ...food,
+
+          enteredQuantity:
+            food.defaultQuantity,
+
+          calculated:
+            nutrition,
+        },
+      ])
 
       setSuggestions([])
 
-      parseInput(foodName)
+      setInput('')
     }
+
+  // =========================
+  // TOTALS
+  // =========================
 
   const totalCalories =
     foods.reduce(
@@ -242,9 +297,13 @@ export default function FoodCalculator() {
         acc,
         food
       ) =>
+
         acc +
-        food.calculated
-          .calories,
+        (
+          food.calculated
+            ?.calories || 0
+        ),
+
       0
     )
 
@@ -254,9 +313,13 @@ export default function FoodCalculator() {
         acc,
         food
       ) =>
+
         acc +
-        food.calculated
-          .protein,
+        (
+          food.calculated
+            ?.protein || 0
+        ),
+
       0
     )
 
@@ -266,9 +329,13 @@ export default function FoodCalculator() {
         acc,
         food
       ) =>
+
         acc +
-        food.calculated
-          .carbs,
+        (
+          food.calculated
+            ?.carbs || 0
+        ),
+
       0
     )
 
@@ -278,9 +345,13 @@ export default function FoodCalculator() {
         acc,
         food
       ) =>
+
         acc +
-        food.calculated
-          .fats,
+        (
+          food.calculated
+            ?.fats || 0
+        ),
+
       0
     )
 
@@ -290,9 +361,13 @@ export default function FoodCalculator() {
         acc,
         food
       ) =>
+
         acc +
-        food.calculated
-          .fiber,
+        (
+          food.calculated
+            ?.fiber || 0
+        ),
+
       0
     )
 
@@ -302,11 +377,19 @@ export default function FoodCalculator() {
         acc,
         food
       ) =>
+
         acc +
-        food.calculated
-          .water,
+        (
+          food.calculated
+            ?.water || 0
+        ),
+
       0
     )
+
+  // =========================
+  // ADD USDA FOODS
+  // =========================
 
   const addToMeals = () => {
 
@@ -316,45 +399,67 @@ export default function FoodCalculator() {
     const existingMeals =
       loadMeals()
 
-    const newMeal = {
+    const mealsToAdd =
+      foods.map((food) => ({
 
-      category:
-        'Smart Food',
+        category:
+          'Smart Food',
 
-      name: input,
+        name:
+          food.name,
 
-      calories:
-        Number(
-          totalCalories.toFixed(
-            1
-          )
-        ),
+        quantity:
+          `${food.enteredQuantity}${food.unit}`,
 
-      protein:
-        Number(
-          totalProtein.toFixed(
-            1
-          )
-        ),
+        calories:
+          Number(
+            food.calculated
+              .calories
+              .toFixed(1)
+          ),
 
-      carbs:
-        Number(
-          totalCarbs.toFixed(
-            1
-          )
-        ),
+        protein:
+          Number(
+            food.calculated
+              .protein
+              .toFixed(1)
+          ),
 
-      fats:
-        Number(
-          totalFats.toFixed(
-            1
-          )
-        ),
-    }
+        carbs:
+          Number(
+            food.calculated
+              .carbs
+              .toFixed(1)
+          ),
+
+        fats:
+          Number(
+            food.calculated
+              .fats
+              .toFixed(1)
+          ),
+
+        fiber:
+          Number(
+            food.calculated
+              .fiber
+              .toFixed(1)
+          ),
+
+        water:
+          Number(
+            food.calculated
+              .water
+              .toFixed(1)
+          ),
+
+        createdAt:
+          Date.now(),
+      }))
 
     const updatedMeals = [
 
-      newMeal,
+      ...mealsToAdd,
 
       ...existingMeals,
     ]
@@ -364,12 +469,38 @@ export default function FoodCalculator() {
     )
 
     alert(
-      'Meal added successfully'
+      'Meals added successfully'
+    )
+
+    setFoods([])
+
+    // REFRESH WEBSITE
+
+    window.dispatchEvent(
+
+      new Event(
+        'hunterfit-profile-updated'
+      )
     )
   }
 
+  // =========================
+  // SAVE CUSTOM FOOD
+  // =========================
+
   const saveCustomFood =
     () => {
+
+      if (
+        !customFood.name
+      ) {
+
+        alert(
+          'Enter food name'
+        )
+
+        return
+      }
 
       const newFood = {
 
@@ -378,38 +509,40 @@ export default function FoodCalculator() {
         calories:
           Number(
             customFood.calories
-          ),
+          ) || 0,
 
         protein:
           Number(
             customFood.protein
-          ),
+          ) || 0,
 
         carbs:
           Number(
             customFood.carbs
-          ),
+          ) || 0,
 
         fats:
           Number(
             customFood.fats
-          ),
+          ) || 0,
 
         fiber:
           Number(
             customFood.fiber
-          ),
+          ) || 0,
 
         water:
           Number(
             customFood.water
-          ),
+          ) || 0,
 
         defaultQuantity:
           Number(
             customFood.defaultQuantity
-          ),
+          ) || 1,
       }
+
+      // SAVE CUSTOM FOOD
 
       const updatedFoods = [
 
@@ -423,11 +556,58 @@ export default function FoodCalculator() {
       )
 
       localStorage.setItem(
+
         'hunterfit-custom-foods',
+
         JSON.stringify(
           updatedFoods
         )
       )
+
+      // SAVE TO MEALS
+
+      const existingMeals =
+        loadMeals()
+
+      const newMeal = {
+
+        category:
+          'Custom Food',
+
+        name:
+          newFood.name,
+
+        quantity:
+          `${newFood.defaultQuantity}${newFood.unit}`,
+
+        calories:
+          newFood.calories,
+
+        protein:
+          newFood.protein,
+
+        carbs:
+          newFood.carbs,
+
+        fats:
+          newFood.fats,
+
+        fiber:
+          newFood.fiber,
+
+        water:
+          newFood.water,
+
+        createdAt:
+          Date.now(),
+      }
+
+      saveMeals([
+
+        newMeal,
+
+        ...existingMeals,
+      ])
 
       alert(
         'Custom food added successfully'
@@ -453,26 +633,38 @@ export default function FoodCalculator() {
 
         unit: 'g',
       })
+
+      // REFRESH WEBSITE
+
+      window.dispatchEvent(
+
+        new Event(
+          'hunterfit-profile-updated'
+        )
+      )
     }
 
   return (
+
     <div className="mt-8 bg-white/5 border border-white/10 rounded-3xl p-8">
 
       <div className="mb-8">
 
         <h2 className="text-3xl font-bold text-green-400 mb-3">
 
-          Smart Food Engine
+          USDA Smart Food Engine
 
         </h2>
 
         <p className="text-gray-400">
 
-          Quantity Based Nutrition Calculator
+          Official Nutrition Database
 
         </p>
 
       </div>
+
+      {/* SEARCH */}
 
       <div className="relative">
 
@@ -485,7 +677,7 @@ export default function FoodCalculator() {
 
           <input
             type="text"
-            placeholder="Example: 200 rice and 2 egg"
+            placeholder="Search foods..."
             value={input}
             onChange={(e) =>
               handleInput(
@@ -497,10 +689,12 @@ export default function FoodCalculator() {
 
         </div>
 
+        {/* SUGGESTIONS */}
+
         {suggestions.length >
           0 && (
 
-          <div className="absolute w-full mt-3 bg-[#111] border border-white/10 rounded-2xl overflow-hidden z-50">
+          <div className="absolute w-full mt-3 bg-[#111] border border-white/10 rounded-2xl overflow-hidden z-50 max-h-[400px] overflow-y-auto">
 
             {suggestions.map(
               (
@@ -512,15 +706,15 @@ export default function FoodCalculator() {
                   key={index}
                   onClick={() =>
                     selectSuggestion(
-                      suggestion.name
+                      suggestion
                     )
                   }
                   className="w-full text-left px-5 py-4 hover:bg-white/5"
                 >
 
-                  <div className="flex items-center justify-between">
+                  <div className="flex items-center justify-between gap-4">
 
-                    <span>
+                    <span className="text-sm">
 
                       {
                         suggestion.name
@@ -528,18 +722,12 @@ export default function FoodCalculator() {
 
                     </span>
 
-                    <span className="text-gray-400 text-sm">
+                    <span className="text-gray-400 text-sm whitespace-nowrap">
 
                       {
                         suggestion.calories
                       }
-                      cal /
-                      {
-                        suggestion.defaultQuantity
-                      }
-                      {
-                        suggestion.unit
-                      }
+                      cal
 
                     </span>
 
@@ -554,6 +742,8 @@ export default function FoodCalculator() {
         )}
 
       </div>
+
+      {/* SELECTED FOODS */}
 
       {foods.length > 0 && (
 
@@ -575,19 +765,25 @@ export default function FoodCalculator() {
                   <h3 className="text-2xl font-bold text-green-400 mb-4">
 
                     {
-                      food.enteredQuantity
-                    }
-                    {
-                      food.unit
-                    }
-                    {' '}
-                    {
                       food.name
                     }
 
                   </h3>
 
                   <div className="space-y-2 text-gray-300">
+
+                    <p>
+
+                      Quantity:
+                      {' '}
+                      {
+                        food.enteredQuantity
+                      }
+                      {
+                        food.unit
+                      }
+
+                    </p>
 
                     <p>
 
@@ -611,7 +807,7 @@ export default function FoodCalculator() {
                           .protein.toFixed(
                             1
                           )
-                      }g
+                      } g
 
                     </p>
 
@@ -624,7 +820,7 @@ export default function FoodCalculator() {
                           .carbs.toFixed(
                             1
                           )
-                      }g
+                      } g
 
                     </p>
 
@@ -637,33 +833,7 @@ export default function FoodCalculator() {
                           .fats.toFixed(
                             1
                           )
-                      }g
-
-                    </p>
-
-                    <p>
-
-                      Fiber:
-                      {' '}
-                      {
-                        food.calculated
-                          .fiber.toFixed(
-                            1
-                          )
-                      }g
-
-                    </p>
-
-                    <p>
-
-                      Water:
-                      {' '}
-                      {
-                        food.calculated
-                          .water.toFixed(
-                            1
-                          )
-                      }ml
+                      } g
 
                     </p>
 
@@ -674,6 +844,8 @@ export default function FoodCalculator() {
             )}
 
           </div>
+
+          {/* TOTALS */}
 
           <div className="bg-gradient-to-br from-green-900/20 to-black border border-green-500/20 rounded-3xl p-8">
 
@@ -696,35 +868,35 @@ export default function FoodCalculator() {
                 label="Protein"
                 value={`${totalProtein.toFixed(
                   1
-                )}g`}
+                )} g`}
               />
 
               <NutritionCard
                 label="Carbs"
                 value={`${totalCarbs.toFixed(
                   1
-                )}g`}
+                )} g`}
               />
 
               <NutritionCard
                 label="Fats"
                 value={`${totalFats.toFixed(
                   1
-                )}g`}
+                )} g`}
               />
 
               <NutritionCard
                 label="Fiber"
                 value={`${totalFiber.toFixed(
                   1
-                )}g`}
+                )} g`}
               />
 
               <NutritionCard
                 label="Water"
                 value={`${totalWater.toFixed(
                   1
-                )}ml`}
+                )} ml`}
               />
 
             </div>
@@ -738,7 +910,7 @@ export default function FoodCalculator() {
 
               <Plus size={22} />
 
-              Add Combined Meal
+              Add Meals
 
             </button>
 
@@ -754,7 +926,7 @@ export default function FoodCalculator() {
 
         <h2 className="text-3xl font-bold text-purple-400 mb-8">
 
-          Add Custom Food
+          Manual Custom Food
 
         </h2>
 
@@ -855,6 +1027,7 @@ function NutritionCard({
 }) {
 
   return (
+
     <div className="bg-white/5 border border-white/10 rounded-2xl p-5">
 
       <p className="text-gray-400 mb-2">
