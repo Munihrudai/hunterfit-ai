@@ -84,6 +84,8 @@ export default function Dashboard() {
   const streakData =
     loadStreakData()
 
+  // GOALS
+
   const calorieGoal =
     Number(
       profile.calories
@@ -94,10 +96,22 @@ export default function Dashboard() {
       profile.protein
     ) || 0
 
+  const carbsGoal =
+    Number(
+      profile.carbs
+    ) || 0
+
+  const fatsGoal =
+    Number(
+      profile.fats
+    ) || 0
+
   const waterGoal =
     Number(
       profile.water
     ) || 0
+
+  // TOTALS
 
   const totalCalories =
     meals.reduce(
@@ -167,6 +181,8 @@ export default function Dashboard() {
       waterData.current || 0
     )
 
+  // PROGRESS %
+
   const hydrationPercent =
     waterGoal
       ? Math.min(
@@ -203,11 +219,37 @@ export default function Dashboard() {
         )
       : 0
 
+  const carbsPercent =
+    carbsGoal
+      ? Math.min(
+          (
+            (totalCarbs /
+              carbsGoal) *
+            100
+          ),
+          100
+        )
+      : 0
+
+  const fatsPercent =
+    fatsGoal
+      ? Math.min(
+          (
+            (totalFats /
+              fatsGoal) *
+            100
+          ),
+          100
+        )
+      : 0
+
   const workoutPercent =
     Math.min(
       totalWorkouts * 20,
       100
     )
+
+  // BMI
 
   const bmi =
     profile.weight &&
@@ -286,7 +328,7 @@ export default function Dashboard() {
 
       {/* TOP CARDS */}
 
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-6 gap-6 mb-8">
 
         <DashboardCard
           icon={<Flame size={28} />}
@@ -295,6 +337,33 @@ export default function Dashboard() {
             totalCalories
           )} / ${calorieGoal}`}
           progress={caloriePercent}
+        />
+
+        <DashboardCard
+          icon={<Target size={28} />}
+          title="Protein"
+          value={`${Math.round(
+            totalProtein
+          )}g / ${proteinGoal}g`}
+          progress={proteinPercent}
+        />
+
+        <DashboardCard
+          icon={<Target size={28} />}
+          title="Carbs"
+          value={`${Math.round(
+            totalCarbs
+          )}g / ${carbsGoal}g`}
+          progress={carbsPercent}
+        />
+
+        <DashboardCard
+          icon={<Target size={28} />}
+          title="Fats"
+          value={`${Math.round(
+            totalFats
+          )}g / ${fatsGoal}g`}
+          progress={fatsPercent}
         />
 
         <DashboardCard
@@ -309,15 +378,6 @@ export default function Dashboard() {
           title="Workouts"
           value={`${totalWorkouts} Sessions`}
           progress={workoutPercent}
-        />
-
-        <DashboardCard
-          icon={<Target size={28} />}
-          title="Protein"
-          value={`${Math.round(
-            totalProtein
-          )}g / ${proteinGoal}g`}
-          progress={proteinPercent}
         />
 
       </div>

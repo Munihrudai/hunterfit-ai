@@ -13,12 +13,23 @@ export default function ProfileCard() {
 
   const [profile, setProfile] =
     useState({
+
       name: '',
+
       age: '',
+
       weight: '',
+
       height: '',
+
       calories: '',
+
       protein: '',
+
+      carbs: '',
+
+      fats: '',
+
       water: '',
     })
 
@@ -31,26 +42,33 @@ export default function ProfileCard() {
       loadProfile()
 
     setProfile({
+
       name:
-        storedProfile.name || '',
+        storedProfile?.name || '',
 
       age:
-        storedProfile.age || '',
+        storedProfile?.age || '',
 
       weight:
-        storedProfile.weight || '',
+        storedProfile?.weight || '',
 
       height:
-        storedProfile.height || '',
+        storedProfile?.height || '',
 
       calories:
-        storedProfile.calories || '',
+        storedProfile?.calories || '',
 
       protein:
-        storedProfile.protein || '',
+        storedProfile?.protein || '',
+
+      carbs:
+        storedProfile?.carbs || '',
+
+      fats:
+        storedProfile?.fats || '',
 
       water:
-        storedProfile.water || '',
+        storedProfile?.water || '',
     })
 
   }, [])
@@ -62,6 +80,7 @@ export default function ProfileCard() {
     setSaved(false)
 
     setProfile({
+
       ...profile,
 
       [e.target.name]:
@@ -75,7 +94,10 @@ export default function ProfileCard() {
 
     setSaved(true)
 
+    // REFRESH WEBSITE
+
     window.dispatchEvent(
+
       new Event(
         'hunterfit-profile-updated'
       )
@@ -89,6 +111,7 @@ export default function ProfileCard() {
   }
 
   return (
+
     <div className="bg-white/5 border border-white/10 rounded-3xl p-6">
 
       <div className="flex items-center justify-between mb-8">
@@ -96,11 +119,15 @@ export default function ProfileCard() {
         <div>
 
           <h2 className="text-3xl font-bold text-purple-400 mb-2">
+
             User Details
+
           </h2>
 
           <p className="text-gray-400">
+
             Update your fitness profile
+
           </p>
 
         </div>
@@ -149,10 +176,26 @@ export default function ProfileCard() {
         />
 
         <InputField
-          label="Protein Goal"
+          label="Protein Goal (g)"
           name="protein"
           type="number"
           value={profile.protein}
+          onChange={handleChange}
+        />
+
+        <InputField
+          label="Carbs Goal (g)"
+          name="carbs"
+          type="number"
+          value={profile.carbs}
+          onChange={handleChange}
+        />
+
+        <InputField
+          label="Fats Goal (g)"
+          name="fats"
+          type="number"
+          value={profile.fats}
           onChange={handleChange}
         />
 
@@ -180,7 +223,9 @@ export default function ProfileCard() {
       {saved && (
 
         <p className="text-green-400 mt-5">
+
           Profile saved successfully
+
         </p>
 
       )}
@@ -198,16 +243,19 @@ function InputField({
 }) {
 
   return (
+
     <div>
 
       <label className="block mb-3 text-gray-300">
+
         {label}
+
       </label>
 
       <input
         type={type}
         name={name}
-        value={value}
+        value={value || ''}
         onChange={onChange}
         className="input"
       />
